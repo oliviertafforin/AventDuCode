@@ -1,12 +1,15 @@
 package org.olivier.Day18;
 
-import org.olivier.Utils.*;
+import org.olivier.Utils.Coord;
+import org.olivier.Utils.Direction;
+import org.olivier.Utils.Grid;
+import org.olivier.Utils.Utils;
 
 import java.io.IOException;
 import java.util.*;
 
 public class Day18 {
-    private static final boolean PART_ONE = true;
+    private static final boolean PART_ONE = false;
     private static Grid<Character> grid;
     private static Coord startCoord;
     private static Direction direction;
@@ -28,18 +31,37 @@ public class Day18 {
             }
         }
         grid = new Grid<>(array);
-        for(int i = 0; i < coords.size() && i < nanoseconds; i++){
-            grid.set(coords.get(i),'#');
+
+        for (int i = 0; i < coords.size() && i < nanoseconds; i++) {
+            grid.set(coords.get(i), '#');
         }
         System.out.println(grid);
 
-        startCoord = new Coord(0,0);
+        startCoord = new Coord(0, 0);
         direction = Direction.E;
-        endCoord = new Coord(HEIGTH-1,WIDTH-1);
+        endCoord = new Coord(HEIGTH - 1, WIDTH - 1);
         startCoord.setDirection(direction);
 
         List<Coord> path = findPath();
-        System.out.println("partie 1 : "+path.get(path.size() - 1).getfCost());
+        System.out.println("partie 1 : " + path.get(path.size() - 1).getfCost());
+
+
+//force brute, on pourrait opti un peu en testant par intervalles d'abord puis en réduisant ces intervalles
+        for (int i = 1024; i < coords.size(); i++) {
+            startCoord = new Coord(0, 0);
+            direction = Direction.E;
+            endCoord = new Coord(HEIGTH - 1, WIDTH - 1);
+            startCoord.setDirection(direction);
+            System.out.println("bytes " + i);
+            grid.set(coords.get(i), '#');
+            path = findPath();
+            if (path.isEmpty()) {
+                System.out.println("passage bloqué au " + coords.get(i)+ ". penser à inverser les coords pour le resultat");
+                break;
+            }
+        }
+
+
     }
 
     //on reprend le jour 16
