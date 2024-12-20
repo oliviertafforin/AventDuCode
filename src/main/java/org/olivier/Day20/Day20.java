@@ -41,36 +41,29 @@ public class Day20 {
         baseTime = (int) path.get(path.size() - 1).getfCost();
         System.out.println("Partie 1 : le temps de base (sans triche) est de " + baseTime + " picosecondes");
 
-        //On regarde le parcours pour des coordonnées proches qui permettraient d'effectuer un raccourci
-        List<Pair<Coord, Coord>> shortcuts = IntStream.range(0, path.size())
-                .boxed()
-                .flatMap(i -> IntStream.range(i + 1, path.size())
-                        .mapToObj(j -> new Pair<>(path.get(i), path.get(j))))
-                .filter(pair -> pair.getKey().isNearby(pair.getValue()))
-                .filter(pair -> grid.get((pair.getKey().v0() + pair.getValue().v0()) / 2, (pair.getKey().v1() + pair.getValue().v1()) / 2) == '#')
-                .distinct()
-                .toList();
-        List<Pair<Coord, Coord>> raccourcisEfficaces = new ArrayList<>();
-        // Afficher les résultats
-        shortcuts.forEach(pair -> {
-            int indexA = path.indexOf(pair.getKey());
-            int indexB = path.indexOf(pair.getValue());
-            int bToEnd = path.size() - indexB;
-            int shortcutLength = indexA + 1 + bToEnd;
-            var tempsGagne = (baseTime - shortcutLength);
-            if (tempsGagne >= 100) {
-                raccourcisEfficaces.add(pair);
-            }
-        });
-        System.out.println("Total de raccourcis efficaces : " + raccourcisEfficaces.size());
-        long endTime = System.nanoTime();
-        // obtenir la différence entre les deux valeurs de temps nano
-        long timeElapsed = endTime - startTime;
-
-        System.out.println("Execution time in milliseconds: " + timeElapsed / 1000000);
+        //PART 1
+        Set<Pair<Coord, Coord>> totalShortcuts1 = getShortcuts(path, 2);
+        System.out.println("Partie 1 : " + totalShortcuts1.size());
 
         //PARTIE 2
-        //TODO
+        Set<Pair<Coord, Coord>> totalShortcuts2 = getShortcuts(path, 20);
+        System.out.println("Partie 2 : " + totalShortcuts2.size());
+    }
+
+    private static Set<Pair<Coord, Coord>> getShortcuts(List<Coord> path, int dureeCheat) {
+        Set<Pair<Coord, Coord>> totalShortcuts = new HashSet<>();
+        for (int i = 0; i < path.size(); i++) {
+            Coord startShortcut = path.get(i);
+            for (int j = i; j < path.size(); j++) {
+                Coord endShortcut = path.get(j);
+                Coord distanceCoordonnees = startShortcut.distance(endShortcut);
+                int distance = Math.abs(distanceCoordonnees.r()) + Math.abs(distanceCoordonnees.c());
+                if (Math.abs(i - j) - distance >= 100 && distance <= dureeCheat) {
+                    totalShortcuts.add(new Pair<>(startShortcut, endShortcut));
+                }
+            }
+        }
+        return totalShortcuts;
     }
 
 
