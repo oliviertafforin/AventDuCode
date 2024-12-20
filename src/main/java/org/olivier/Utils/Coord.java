@@ -30,6 +30,12 @@ public class Coord extends Tuple.Pair<Integer, Integer> implements Comparable<Co
         return new Direction(other.r() - r(), other.c() - c());
     }
 
+    public boolean isNearby(Coord other) {
+        return (Math.abs(this.r() - other.r()) == 2 && this.c() == other.c()) ||
+                (Math.abs(this.c() - other.c()) == 2 && this.r() == other.r());
+    }
+
+
     @Override
     public int compareTo(Coord other) {
         return Double.compare(this.fCost, other.fCost);
