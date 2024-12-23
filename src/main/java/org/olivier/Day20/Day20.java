@@ -21,7 +21,6 @@ public class Day20 {
     public static final int nanoseconds = 1024;
 
     public static void main(String[] args) throws IOException {
-        long startTime = System.nanoTime();
         List<String> map = List.of(Utils.getFileContent("input_d20.txt").split("\n"));
 
         List<List<Character>> result = map.stream()
